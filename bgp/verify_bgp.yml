@@ -1,0 +1,39 @@
+#
+# Deploy IBGP and EBGP routing in a WAN fabric
+#
+---
+- name: Wait for BGP to start
+  pause: seconds=60 prompt="Waiting 60 seconds for BGP to start"
+  tags: [ verify ]
+  when: deploy is defined
+
+- set_fact:
+    sessions: "{{ nodes[inventory_hostname].ibgp | union(nodes[inventory_hostname].ebgp|default([])) }}"
+  tags: [ verify ]
+
+- name: Collect BGP neighbors
+  ios_command:
+    provider: "{{ios_provider}}"
+    commands:
+    - "show ip bgp summary | include ^[0-9]+\\."
+  register: bgp_neighbors
+  tags: [ verify ]
+
+- name: Verify BGP neighbors are configured
+  assert:
+    that: "'{{ item.ip }}' in bgp_neighbors.stdout[0]"
+    msg:  "BGP neighbor {{ item.rid }}/{{item.ip}} is not configured"
+  with_items: "{{ sessions }}"
+  tags: [ verify ]
+
+- name: Verify BGP sessions are up and running
+  assert:
+    that: |
+      {% set pattern = '^'~item.ip~'.*\s+(\d+)$' %}
+      {{ bgp_neighbors.stdout[0] | regex_findall(pattern,'\1')|length > 0 }}
+    msg:  >
+      {% set pattern = '^'~item.ip~'.*\s+(\D+)$' %}
+      Session with BGP neighbor {{ item.rid }}/{{item.ip}} is not established
+      state is {{ bgp_neighbors.stdout[0] | regex_findall(pattern,'\1') | join("") }}
+  with_items: "{{ sessions }}"
+  tags: [ verify ]
