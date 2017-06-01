@@ -3,7 +3,7 @@
 router ospf 1
  router-id {{ node.rid }}
 !
-interface loopback0
+interface Loopback0
  ip ospf 1 area 0
 !
 {%   for intf,data in node.internal|dictsort %}

@@ -2,11 +2,7 @@
 # Deploy OSPF routing in a WAN fabric
 #
 ---
-- name: Create configuration changes directory
-  local_action: file path={{configs}}/changes state=directory
-  run_once: true
-  check_mode: no
-  changed_when: no
+- include: ../tools/log_changes_init.yml
 
 - name: Deploy configurations
   ios_config:
@@ -14,21 +10,4 @@
     src: "{{configs}}/{{inventory_hostname}}.ospf.cfg"
   register: changes
 
-- name: Document changes
-  copy:
-    content: |
-      **************************************
-      OSPF changes on {{inventory_hostname}}
-      **************************************
-      {% for line in changes.commands %}
-      {{ line }}
-      {% endfor %}
-    dest: "{{configs}}/changes/{{inventory_hostname}}.changes"
-  delegate_to: localhost
-  check_mode: no
-
-- assemble: src={{configs}}/changes dest={{configs}}/changes.txt
-  check_mode: no
-  changed_when: no
-  delegate_to: localhost
-  run_once: true
+- include: ../tools/log_changes.yml component=OSPF

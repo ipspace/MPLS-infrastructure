@@ -2,11 +2,7 @@
 # Deploy IBGP and EBGP routing in a WAN fabric
 #
 ---
-- name: Create configuration changes directory
-  local_action: file path={{configs}}/changes state=directory
-  run_once: true
-  check_mode: no
-  changed_when: no
+- include: ../tools/log_changes_init.yml
 
 - name: Deploy configurations
   ios_config:
@@ -15,24 +11,7 @@
   tags: [ deploy ]
   register: changes
 
-- name: Document changes
-  copy:
-    content: |
-      *************************************
-      BGP changes on {{inventory_hostname}}
-      *************************************
-      {% for line in changes.commands %}
-      {{ line }}
-      {% endfor %}
-    dest: "{{configs}}/changes/{{inventory_hostname}}.bgp.changes"
-  delegate_to: localhost
-  check_mode: no
-
-- assemble: src={{configs}}/changes dest={{configs}}/changes.txt
-  check_mode: no
-  changed_when: no
-  delegate_to: localhost
-  run_once: true
+- include: ../tools/log_changes.yml component=BGP
 
 - name: Refresh BGP routers
   ios_command:

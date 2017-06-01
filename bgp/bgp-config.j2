@@ -58,7 +58,7 @@ router bgp {{ node.as }}
 {%     endfor %}
 {%   endfor %}
 !
-route-map Redistribute32
+route-map Redistribute32 permit 10
  match ip address prefix-list Subnet32
 !
 no ip prefix-list Subnet32
