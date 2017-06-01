@@ -1,0 +1,8 @@
+#
+# Deploy VPNv4 services from services-vpnv4 definition
+#
+---
+- name: Create configurations
+  template: src=vpnv4-config.j2 dest={{configs}}/{{inventory_hostname}}.vpnv4.cfg
+  check_mode: no
+  tags: [ configs ]

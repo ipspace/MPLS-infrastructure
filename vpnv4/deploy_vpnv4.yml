@@ -1,0 +1,13 @@
+#
+# Deploy VPNv4 services from configuration files
+#
+---
+- include: ../tools/log_changes_init.yml
+
+- name: Deploy configurations
+  ios_config:
+    provider: "{{ios_provider}}"
+    src: "{{configs}}/{{inventory_hostname}}.vpnv4.cfg"
+  register: changes
+
+- include: ../tools/log_changes.yml component=VPNv4

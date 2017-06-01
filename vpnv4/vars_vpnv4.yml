@@ -1,0 +1,15 @@
+#
+# Read VPNv4 variables
+#
+---
+- include_vars:
+    file: "{{ services }}"
+    name: vpnv4
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - nodes.yml
+    - "{{ inventory_dir }}/nodes.yml"
+  tags: [ configs,deploy ]
+
+- set_fact: customers="{{ lookup('template','list-of-customers.json.j2') }}"

@@ -4,6 +4,5 @@
 ---
 - name: Create configuration changes directory
   local_action: file path={{configs}}/changes state=directory
-  run_once: true
   check_mode: no
   changed_when: no

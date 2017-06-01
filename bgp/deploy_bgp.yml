@@ -8,7 +8,6 @@
   ios_config:
     provider: "{{ios_provider}}"
     src: "{{configs}}/{{inventory_hostname}}.bgp.cfg"
-  tags: [ deploy ]
   register: changes
 
 - include: ../tools/log_changes.yml component=BGP
@@ -19,7 +18,5 @@
     commands: 
     - "clear ip bgp * all soft out"
   register: bgp_neighbors
-  tags: [ deploy ]
 
 - set_fact: deploy=1
-  tags: [ deploy ]

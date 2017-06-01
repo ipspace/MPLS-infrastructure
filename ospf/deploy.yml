@@ -12,6 +12,8 @@
       - nodes.yml
       - "{{ inventory_dir }}/nodes.yml"
     tags: [ configs,verify ]
+  - include: ../tools/clean.yml
+    tags: [ clean ]
   - include: config_ospf.yml
     tags: [ configs ]
   - include: deploy_ospf.yml
