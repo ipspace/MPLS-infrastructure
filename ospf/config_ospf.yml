@@ -1,5 +1,5 @@
 #
-# Deploy OSPF routing in a WAN fabric
+# Create OSPF configuration
 #
 ---
 - name: Create configuration directory
