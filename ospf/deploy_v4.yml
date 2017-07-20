@@ -1,0 +1,23 @@
+#
+# Deploy OSPF routing in a WAN fabric
+#
+---
+- name: Deploy OSPF configurations
+  hosts: all
+  vars:
+    configs: "{{inventory_dir}}/configs"
+  tasks:
+  - include_vars: "{{ inventory_dir }}/nodes.yml"
+  - ios_config:
+      src: "{{configs}}/{{inventory_hostname}}.ospf.cfg"
+    register: changes
+  - copy:
+      content: |
+        {% if ansible_check_mode %}
+        === Running in check mode, configuration was not changed ===
+        {% endif %}
+        {% for line in changes.commands %}
+        {{ line }}
+        {% endfor %}
+      dest: "{{configs}}/{{inventory_hostname}}_changes.txt"
+    check_mode: no

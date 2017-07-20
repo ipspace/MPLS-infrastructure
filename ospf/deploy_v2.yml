@@ -1,0 +1,16 @@
+#
+# Deploy OSPF routing in a WAN fabric
+#
+---
+- name: Deploy OSPF configurations
+  hosts: all
+  vars:
+    configs: "{{inventory_dir}}/configs"
+  tasks:
+  - include_vars: "{{ inventory_dir }}/nodes.yml"
+  - ios_config:
+      src: "{{configs}}/{{inventory_hostname}}.ospf.cfg"
+    register: changes
+  - copy:
+      content: "{{changes.commands|join('\\n')}}"
+      dest: "{{configs}}/{{inventory_hostname}}_changes.txt"
