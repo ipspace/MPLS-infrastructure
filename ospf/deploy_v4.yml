@@ -16,7 +16,7 @@
         {% if ansible_check_mode %}
         === Running in check mode, configuration was not changed ===
         {% endif %}
-        {% for line in changes.commands %}
+        {% for line in changes.commands|default([]) %}
         {{ line }}
         {% endfor %}
       dest: "{{configs}}/{{inventory_hostname}}_changes.txt"

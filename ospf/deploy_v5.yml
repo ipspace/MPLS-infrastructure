@@ -11,10 +11,22 @@
   - ios_config:
       src: "{{configs}}/{{inventory_hostname}}.ospf.cfg"
     register: changes
+    check_mode: yes
   - copy:
       content: |
+        {% if ansible_check_mode %}
+        === Running in check mode, configuration was not changed ===
+        {% endif %}
         {% for line in changes.commands|default([]) %}
         {{ line }}
         {% endfor %}
       dest: "{{configs}}/{{inventory_hostname}}_changes.txt"
-    check_mode: no
+    changed_when: false
+  - fail: msg="Too many changes on {{inventory_hostname}}, aborting"
+    when: |
+      changes.commands is defined and
+      changes.commands|length > 10 and 
+      force is not defined
+  - ios_config:
+      src: "{{configs}}/{{inventory_hostname}}.ospf.cfg"
+    when: not ansible_check_mode

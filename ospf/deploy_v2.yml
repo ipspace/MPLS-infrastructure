@@ -12,5 +12,8 @@
       src: "{{configs}}/{{inventory_hostname}}.ospf.cfg"
     register: changes
   - copy:
-      content: "{{changes.commands|join('\\n')}}"
+      content: |
+        {% for line in changes.commands|default([]) %}
+        {{ line }}
+        {% endfor %}
       dest: "{{configs}}/{{inventory_hostname}}_changes.txt"
