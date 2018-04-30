@@ -14,6 +14,8 @@ The playbooks in *bgp*, *ospf* and *vpnv4* directories read per-node data models
 * **deploy** - deploy the configuration files from the *configs* directory to the devices
 * **verify** - verify OSPF or BGP adjacencies
 
+The *hosts* file in this repository was used with [this VIRL topology](https://github.com/ipspace/NetOpsWorkshop/blob/master/topologies/VIRL/Inter-AS.virl).
+
 ## Data model
 
 The *infrastructure* data model in **fabric.yml** has these sections:
